@@ -81,7 +81,7 @@ init()
 GREEN = Fore.GREEN
 RESET = Fore.RESET
 GRAY = Fore.LIGHTBLACK_EX
-
+RED = Fore.LIGHTRED_EX
 # number of threads, feel free to tune this parameter as you wish
 N_THREADS = 100
 # thread queue
@@ -145,21 +145,21 @@ import os
 
 def os_discovery():
     
-    # Construct the nmap command using string formatting
     service = f"nmap {Host} -sV -version-intensity 8 -T4 --host-timeout 120"  # More secure than check_call
     oS = f"nmap {Host} -O -T4 --host-timeout 120"
     output = subprocess.check_output(service, shell=True).decode('utf-8')
     services = []
     for line in output.splitlines():
         if "open" in line:
-            service = line.split()[2]
-            services.append(service)
+           parts = line.split()
+           service_name = parts[2]
+           services.append(service_name)
     return services
 services = os_discovery()
 
 def vulnerability_scan(service):
     all_vulnerabilities = []
-    vulners_api = vulners.VulnersApi(api_key="QRDTHXAEX2ID16HG561UEFPDDTDJC9GPMKIATCMQ6DWNN3L8V993XUZIC42927I4")
+    vulners_api = vulners.VulnersApi(api_key="03Q0WGSQXVJUMU8F49RAENCJY1RBXJGK0HCAG12P3R5W0LE98LYKI4BY11JCP08J")
 
     for service in services:
         print(f"\n\nVulnerabilities found for service: {service}\n\n")
@@ -168,14 +168,17 @@ def vulnerability_scan(service):
         try:
             # Search for vulnerabilities using the Vulners API
             results = vulners_api.find_exploit_all(service)
+            filtered_results = [result for result in results if service in result['description']]
 
             # Check if vulnerabilities were found
-            if results:
-                for result in results:
+            if filtered_results:
+                for result in filtered_results:
                     vulnerability = {
                         "CVE ID": result.get('id'),
                         "Title": result.get('title'),
-                        "Description": result.get('description')
+                        "Description": result.get('description'),
+                        "Severity": result.get('cvss'),
+                        "CVSS Score": result.get('cvss', {}).get('score', 'N/A')
                     }
                     vulnerabilities.append(vulnerability)
 
@@ -183,6 +186,7 @@ def vulnerability_scan(service):
                     print(f"{GRAY}[+] CVE ID: {result.get('id')}{RESET}")
                     print(f"{GREEN}- Title: {result.get('title')} {RESET}")
                     print(f"{GREEN}- Description: {result.get('description')}{RESET}")
+                    print(f"{RED}- CVSS Score: {vulnerability.get('CVSS Score', 'N/A')}{RESET}")
             else:
                 print("No vulnerabilities found for this service.")
         except Exception as e:
@@ -191,4 +195,3 @@ def vulnerability_scan(service):
     return all_vulnerabilities
 vulnerabilities = vulnerability_scan(services)
 print(vulnerabilities)
-
