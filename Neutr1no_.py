@@ -159,7 +159,7 @@ services = os_discovery()
 
 def vulnerability_scan(service):
     all_vulnerabilities = []
-    vulners_api = vulners.VulnersApi(api_key="03Q0WGSQXVJUMU8F49RAENCJY1RBXJGK0HCAG12P3R5W0LE98LYKI4BY11JCP08J")
+    vulners_api = vulners.VulnersApi(api_key="Insert your API key here")
 
     for service in services:
         print(f"\n\nVulnerabilities found for service: {service}\n\n")
