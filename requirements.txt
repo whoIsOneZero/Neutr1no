@@ -1,0 +1,10 @@
+appdirs==1.4.4
+certifi==2024.8.30
+charset-normalizer==3.4.0
+colorama==0.4.6
+dnspython==2.7.0
+idna==3.10
+requests==2.32.3
+six==1.16.0
+urllib3==2.2.3
+vulners==2.2.2
