@@ -21,7 +21,10 @@ formatted_banner = "-"*60 + "\n" + BANNER + "-"*60
 
 
 def print_usage():
-    """prints usage instructions"""
+    """
+    prints usage instructions
+    """
+
     print(formatted_banner)
     print("Usage: python Neutr1no_.py [options]")
     print("Options:")
@@ -130,6 +133,9 @@ def port_scan(port):
 
 
 def scan_thread():
+    """
+    worker thread for port scanning
+    """
     global q
     while True:
         # get the port number from the queue
