@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import socket
 import sys
 from colorama import init, Fore
@@ -8,33 +9,28 @@ import dns.resolver
 import vulners
 import subprocess
 
+BANNER = """
+  _   _            _       __             
+ | \ | |          | |     /_ |            
+ |  \| | ___ _   _| |_ _ __| |_ __   ___  
+ | . ` |/ _ \ | | | __| '__| | '_ \ / _ \ 
+ | |\  |  __/ |_| | |_| |  | | | | | (_) |
+ |_| \_|\___|\__,_|\__|_|  |_|_| |_|\___/                                                                             
+"""
+formatted_banner = "-"*60 + "\n" + BANNER + "-"*60
+
+
 def print_usage():
-    """Prints usage instructions for the application."""
+    """prints usage instructions"""
+    print(formatted_banner)
     print("Usage: python Neutr1no_.py [options]")
     print("Options:")
     print("  -h, --help       Show this help message and exit")
     print("  -ip <address>    Specify an IP address to scan")
     print("  -host <name>     Specify a hostname to resolve and scan")
-    print("\nExample:")
-    print("  python script.py -ip 192.168.1.1")
-    print("  python script.py -host example.com")
-
-def mainMenu():
-    """Prints a menu and returns the user's choice."""
-    print("-"*80)
-    print("NEUTR1NO")
-    print("-"*80)
-    print()
-    print("\t\t\t1---> IP address")
-    print("\t\t\t2---> Host Name")
-    print()
-
-    while True:
-        try:
-            choice = int(input("Select Your Option : "))
-            return choice
-        except ValueError:
-            print("Invalid choice. Please enter 1 or 2.")
+    """print("\nExample:")
+    print("  python Neutr1no.py -ip 192.168.1.1")
+    print("  python Neutr1no.py -host example.com")"""
 
 
 def is_valid_ip(ip_str):
@@ -64,34 +60,43 @@ def get_ip_address(hostname):
 
 
 def main(host):
-    print(f"Got the host: {host}")  
+    print(f"Got the host: {host}")
+
 
 if __name__ == "__main__":
-  # check for arguments
-  if len(sys.argv) < 3:
-      print_usage()
-      sys.exit(1)
-  
-  choice = mainMenu()
-  if choice == 1:
-    ip_str = input("Enter IP Address: ")
-    if is_valid_ip(ip_str):
-      ip = ip_str
-      main(ip)
+    # argument parsing
+    if len(sys.argv) < 3:
+        if len(sys.argv) == 2 and (sys.argv[1] == "-h" or sys.argv[1] == "--help"):
+            print_usage()
+            sys.exit(1)
+
+        print_usage()
+        sys.exit(1)
+
+    # valid args
+    if sys.argv[1] == '-ip' and len(sys.argv) == 3:
+        ip_str = sys.argv[2]
+        if is_valid_ip(ip_str):
+            ip = ip_str
+            main(ip)
+        else:
+            print("Invalid IP address")
+            sys.exit(1)
+    elif sys.argv[1] == "-host" and len(sys.argv) == 3:
+        hostname = sys.argv[2]
+        ip_address = get_ip_address(hostname)
+        if ip_address:
+            ip = ip_address
+            main(ip)
+        else:
+            print("Could not resolve hostname")
+            sys.exit(1)
+
+    # invalid arg
     else:
-      print("Invalid IP address")
-      mainMenu()
-  elif choice == 2:
-    hostname = input('Enter Host Name: ')
-    ip_address = get_ip_address(hostname)
-    if ip_address:
-      ip = ip_address
-      main(ip)
-    else:
-      mainMenu()
-  else:
-    print("Invalid Choice :(")
-    mainMenu()
+        print("Invalid options")
+        print_usage()
+        sys.exit(1)
 
 # some colors
 init()
@@ -105,6 +110,7 @@ N_THREADS = 100
 q = Queue()
 print_lock = Lock()
 Host = ip or hostname
+
 
 def port_scan(port):
     """
@@ -122,6 +128,7 @@ def port_scan(port):
     finally:
         s.close()
 
+
 def scan_thread():
     global q
     while True:
@@ -129,7 +136,7 @@ def scan_thread():
         worker = q.get()
         # scan that port number
         port_scan(worker)
-        # tells the queue that the scanning for that port 
+        # tells the queue that the scanning for that port
         # is done
         q.task_done()
 
@@ -152,27 +159,32 @@ def main(Host, ports):
             # wait the threads ( port scanners ) to finish
         q.join()
     except socket.gaierror as e:
-        print (f"Error: Could not resolve hostname {ip}")
+        print(f"Error: Could not resolve hostname {ip}")
+
+
 ports = [range(1025)]
-main(Host,ports)
+main(Host, ports)
 print(main)
 
-#OS detection
-import os
 
+# OS detection
 def os_discovery():
-    
-    service = f"nmap {Host} -sV -version-intensity 8 -T4 --host-timeout 120"  # More secure than check_call
+
+    # More secure than check_call
+    service = f"nmap {Host} -sV -version-intensity 8 -T4 --host-timeout 120"
     oS = f"nmap {Host} -O -T4 --host-timeout 120"
     output = subprocess.check_output(service, shell=True).decode('utf-8')
     services = []
     for line in output.splitlines():
         if "open" in line:
-           parts = line.split()
-           service_name = parts[2]
-           services.append(service_name)
+            parts = line.split()
+            service_name = parts[2]
+            services.append(service_name)
     return services
+
+
 services = os_discovery()
+
 
 def vulnerability_scan(service):
     all_vulnerabilities = []
@@ -185,7 +197,8 @@ def vulnerability_scan(service):
         try:
             # Search for vulnerabilities using the Vulners API
             results = vulners_api.find_exploit_all(service)
-            filtered_results = [result for result in results if service in result['description']]
+            filtered_results = [
+                result for result in results if service in result['description']]
 
             # Check if vulnerabilities were found
             if filtered_results:
@@ -202,13 +215,18 @@ def vulnerability_scan(service):
                     # Print vulnerability details
                     print(f"{GRAY}[+] CVE ID: {result.get('id')}{RESET}")
                     print(f"{GREEN}- Title: {result.get('title')} {RESET}")
-                    print(f"{GREEN}- Description: {result.get('description')}{RESET}")
-                    print(f"{RED}- CVSS Score: {vulnerability.get('CVSS Score', 'N/A')}{RESET}")
+                    print(
+                        f"{GREEN}- Description: {result.get('description')}{RESET}")
+                    print(
+                        f"{RED}- CVSS Score: {vulnerability.get('CVSS Score', 'N/A')}{RESET}")
             else:
                 print("No vulnerabilities found for this service.")
         except Exception as e:
-            print(f"Error searching for vulnerabilities for service {service}:", e)
+            print(
+                f"Error searching for vulnerabilities for service {service}:", e)
 
     return all_vulnerabilities
+
+
 vulnerabilities = vulnerability_scan(services)
 print(vulnerabilities)
