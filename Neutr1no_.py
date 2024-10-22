@@ -1,4 +1,6 @@
+#!/usr/bin/env python3
 import socket
+import sys
 from colorama import init, Fore
 from threading import Thread, Lock
 from queue import Queue
@@ -6,6 +8,16 @@ import dns.resolver
 import vulners
 import subprocess
 
+def print_usage():
+    """Prints usage instructions for the application."""
+    print("Usage: python Neutr1no_.py [options]")
+    print("Options:")
+    print("  -h, --help       Show this help message and exit")
+    print("  -ip <address>    Specify an IP address to scan")
+    print("  -host <name>     Specify a hostname to resolve and scan")
+    print("\nExample:")
+    print("  python script.py -ip 192.168.1.1")
+    print("  python script.py -host example.com")
 
 def mainMenu():
     """Prints a menu and returns the user's choice."""
@@ -55,6 +67,11 @@ def main(host):
     print(f"Got the host: {host}")  
 
 if __name__ == "__main__":
+  # check for arguments
+  if len(sys.argv) < 3:
+      print_usage()
+      sys.exit(1)
+  
   choice = mainMenu()
   if choice == 1:
     ip_str = input("Enter IP Address: ")
