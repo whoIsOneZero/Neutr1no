@@ -4,7 +4,7 @@ from network.dns_lookup import get_ip_address
 from network.os_discovery import os_discovery
 from network.port_scanner import scan_ports
 from utils.helpers import is_valid_ip, print_usage
-from vulnerability import vulnerability_scan
+from vulnerability.vulnerability_scan import vulnerability_scan
 
 
 """def main(host):
