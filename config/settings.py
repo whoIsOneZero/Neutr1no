@@ -1,0 +1,1 @@
+VULNERS_API_KEY = "Insert your API key here"
