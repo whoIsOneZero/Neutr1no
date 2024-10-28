@@ -18,11 +18,11 @@ def print_usage():
     """
 
     print(formatted_banner)
-    print("Usage: python Neutr1no_.py [options]")
+    print("Usage: python3 main.py [options]")
     print("Options:")
-    print("  -h, --help       Show this help message and exit")
-    print("  -ip <address>    Specify an IP address to scan")
-    print("  -host <name>     Specify a hostname to resolve and scan")
+    print("  -h, --help       show help message and exit")
+    print("  -ip <address>    specify an IP address to scan")
+    print("  -host <name>     specify a hostname to resolve and scan")
     """print("\nExample:")
     print("  python Neutr1no.py -ip 192.168.1.1")
     print("  python Neutr1no.py -host example.com")"""
