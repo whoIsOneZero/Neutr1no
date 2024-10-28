@@ -6,8 +6,8 @@ Neutr1no is a python-based network vulnerability assessment tool in script form.
   [Nmap website](https://nmap.org/download)
 
 2. **Register for an API key with Vulners**  
-  - Website - https://vulners.com/
-  - Insert the API key in the `.env` file
+    - Website - https://vulners.com/
+    - Insert the API key in the `.env` file
 
 3. **Clone repo and install dependencies**:
     ```sh
@@ -23,9 +23,9 @@ Neutr1no is a python-based network vulnerability assessment tool in script form.
     python3 -m venv my_venv
 
     # activate the virtual environment.
-    my_venv\Scripts\activate # Windows:
+    my_venv\Scripts\activate # Windows
   
-    source my_venv/bin/activate # macOS/Linux:
+    source my_venv/bin/activate # macOS/Linux
 
     # install the required dependencies
     pip install -r requirements.txt
