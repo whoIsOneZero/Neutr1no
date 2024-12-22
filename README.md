@@ -5,41 +5,35 @@ Neutr1no is a python-based network vulnerability assessment tool in script form.
 1. **Download and install Nmap**:  
   [Nmap website](https://nmap.org/download)
 
-2. **Clone the Repository or Download the Code**:
-  - Clone the repository.
+2. **Register for an API key with Vulners**  
+    - Website - https://vulners.com/
+    - Insert the API key in the `.env` file
+
+3. **Clone repo and install dependencies**:
     ```sh
+    # clone the repository
     git clone https://github.com/Ar1t/Neutr1no.git
-    ```
-  - Or download the zipped project folder and extract the files.
 
-3. **Navigate to the Project Directory**:
-  - Open a terminal (or command prompt) and navigate to the directory containing the project files. Example:
-    ```sh
+    # or download the zipped project folder and extract the files
+
+    # Navigate to the project directory
     cd Desktop/security_projects/Neutr1no/
-    ```
 
-3. **Create a Virtual Environment (Optional but Recommended)**:
-  - Create a virtual environment to isolate the project dependencies.
-    ```sh
+    # create a virtual environment to isolate the project dependencies
     python3 -m venv my_venv
-    ```
-  - Activate the virtual environment.
-    * Windows:
-      ```sh
-      my_venv\Scripts\activate
-      ```
-    * macOS/Linux:
-      ```sh
-      source my_venv/bin/activate
-      ```
 
-4. **Install Required Dependencies**:
-    ```sh
+    # activate the virtual environment.
+    my_venv\Scripts\activate # Windows
+  
+    source my_venv/bin/activate # macOS/Linux
+
+    # install the required dependencies
     pip install -r requirements.txt
     ```
-5. **Run the Program**:
+
+3. **Run the program**:
     ```sh
-    python Neutr1no_.py
+    python main.py
     ```
   
 ## How to use
